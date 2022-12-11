@@ -37,7 +37,8 @@ var ctx = cnv.getContext("2d");
 cnv.width = height;
 cnv.height = width;
 
-var pos = 0;
+var posX = 0;
+var posZ = 0;
 var angle = 0;
 var left=false,right=false,up=false,down=false;
 document.body.addEventListener('keydown', function(e) {
@@ -67,10 +68,12 @@ function updateKeys(code,val) {
 var positions = [];
 
 function update() {
-  if(left) angle-=2;
-  if(right) angle+=2;
-  if(up) pos+=2;
-  if(down) pos-=2;
+  // if(left) angle-=2;
+  // if(right) angle+=2;
+  if(left) posX+=2;
+  if(right) posX-=2;
+  if(up) posZ+=2;
+  if(down) posZ-=2;
   positions = [];
   var ang = angle * 0.0123;
   var s = Math.sin(ang); // deltaX
@@ -78,8 +81,8 @@ function update() {
   var allPoints = [];
   var allTrngls = [];
   var allColors = [];
-  //                   C           Y
-  var mat = [c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 4 - (pos * 0.123)];
+  //        [                       X][         Y][              Z]
+  var mat = [c, 0, -s, (posX * 0.123), 0, 1, 0, 0, s, 0, c, 4 - (posZ * 0.123)];
   ctx.clearRect(0, 0, height, width);
   for (var i = 0; i < cubes.length; i++) {
     allPoints.push(...cubes[i].points);
