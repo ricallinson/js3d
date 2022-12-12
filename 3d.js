@@ -41,16 +41,16 @@ console.log(height, width);
 var posX = 0;
 var posY = 0;
 var posZ = 0;
-var rotation = 0;
+var posR = 0;
 
-var left=false;
-var right=false;
-var up=false;
-var down=false;
-var forwards=false;
-var backwards=false;
-var turnLeft=false;
-var turnRight=false;
+var moveLeft=false;
+var moveRight=false;
+var moveUp=false;
+var moveDown=false;
+var moveForwards=false;
+var moveBackwards=false;
+var rotateLeft=false;
+var rotateRight=false;
 
 document.body.addEventListener('keydown', function(e) {
   updateKeys(e.keyCode, true);
@@ -63,28 +63,28 @@ document.body.addEventListener('keyup', function(e) {
 function updateKeys(code,val) {
   switch (code) {
     case 37:
-      left=val;
-      break; //Left key
+      moveLeft=val;
+      break; //moveLeft key
     case 87:
-      up=val;
+      moveUp=val;
       break; //Up key
     case 39:
-      right=val;
-      break; //Right key
+      moveRight=val;
+      break; //moveRight key
     case 83:
-      down=val;
+      moveDown=val;
       break; //Down key
     case 38:
-      forwards=val;
+      moveForwards=val;
       break; //w key
     case 40:
-      backwards=val;
+      moveBackwards=val;
       break; //s key
     case 65:
-      turnLeft=val;
+      rotateLeft=val;
       break; //a key
     case 68:
-      turnRight=val;
+      rotateRight=val;
       break; //d key
     // default:
     //   console.log(code);
@@ -94,16 +94,16 @@ function updateKeys(code,val) {
 var positions = [];
 
 function update() {
-  if(left) posX+=2;
-  if(right) posX-=2;
-  if(up) posZ-=2;
-  if(down) posZ+=2;
-  if(forwards) posY+=2;
-  if(backwards) posY-=2;
-  if(turnLeft) rotation+=2;
-  if(turnRight) rotation-=2;
+  if(moveLeft) posX+=2;
+  if(moveRight) posX-=2;
+  if(moveUp) posZ-=2;
+  if(moveDown) posZ+=2;
+  if(moveForwards) posY+=2;
+  if(moveBackwards) posY-=2;
+  if(rotateLeft) posR+=2;
+  if(rotateRight) posR-=2;
   positions = [];
-  var ang = rotation * 0.0123;
+  var ang = posR * 0.0123;
   var s = Math.sin(ang);
   var c = Math.cos(ang);
   var allPoints = [];
@@ -111,7 +111,7 @@ function update() {
   var allColors = [];
   // What does this do?
   var matrix = [c, 0, -s, (posX * 0.123), 0, 1, 0, (posY * 0.123), s, 0, c, (posZ * 0.123)];
-  // console.log('X', posX, 'Y', posY, 'Z', posZ, 'R', rotation);
+  // console.log('X', posX, 'Y', posY, 'Z', posZ, 'R', posR);
   ctx.clearRect(0, 0, height, width);
   for (var i = 0; i < cubes.length; i++) {
     allPoints.push(...cubes[i].points);
