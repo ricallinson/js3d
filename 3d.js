@@ -38,9 +38,11 @@ cnv.width = height;
 cnv.height = width;
 
 var posX = 0;
+var posY = 0;
 var posZ = 0;
 var angle = 0;
-var left=false,right=false,up=false,down=false;
+var rotation = 0;
+var left=false,right=false,up=false,down=false,rise=false,fall=false,lookLeft=false,lookRight=false;
 document.body.addEventListener('keydown', function(e) {
   updateKeys(e.keyCode, true);
 });
@@ -62,27 +64,44 @@ function updateKeys(code,val) {
     case 40:
       down=val;
       break; //Down key
+    case 87:
+      rise=val;
+      break; //w key
+    case 83:
+      fall=val;
+      break; //s key
+    case 65:
+      lookLeft=val;
+      break; //a key
+    case 68:
+      lookRight=val;
+      break; //d key
+    default:
+      console.log(code);
   }
 }
 
 var positions = [];
-
+var pi = Math.PI;
 function update() {
-  // if(left) angle-=2;
-  // if(right) angle+=2;
   if(left) posX+=2;
   if(right) posX-=2;
-  if(up) posZ+=2;
-  if(down) posZ-=2;
+  if(up) posZ-=2;
+  if(down) posZ+=2;
+  if(rise) posY+=2;
+  if(fall) posY-=2;
+  if(lookLeft) rotation+=2;
+  if(lookRight) rotation-=2;
   positions = [];
-  var ang = angle * 0.0123;
-  var s = Math.sin(ang); // deltaX
-  var c = Math.cos(ang); // deltaY
+  var ang = rotation * 0.0123;
+  var s = Math.sin(ang);
+  var c = Math.cos(ang);
   var allPoints = [];
   var allTrngls = [];
   var allColors = [];
-  //        [                       X][         Y][              Z]
-  var mat = [c, 0, -s, (posX * 0.123), 0, 1, 0, 0, s, 0, c, 4 - (posZ * 0.123)];
+  //        [c      s              X][                      Y][s     c                   Z]
+  var mat = [c, 0, -s, (posX * 0.123), 0, 1, 0, (posY * 0.123), s, 0, c, (posZ * 0.123)];
+  console.log('X', posX, 'Y', posY, 'Z', posZ, 'R', rotation);
   ctx.clearRect(0, 0, height, width);
   for (var i = 0; i < cubes.length; i++) {
     allPoints.push(...cubes[i].points);
