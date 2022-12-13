@@ -1,0 +1,27 @@
+{
+  "name": "js3d",
+  "version": "1.0.0",
+  "description": "Simple 3D engine",
+  "main": "3d.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fmt": "eslint --fix './*.js' './**/*.js' './*.json' './**/*.json'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ricallinson/js3d.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ricallinson/js3d/issues"
+  },
+  "homepage": "https://github.com/ricallinson/js3d#readme",
+  "dependencies": {
+    "cypress": "^11.0.1",
+    "eslint": "^8.26.0",
+    "eslint-plugin-css": "^0.6.0",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-json": "^3.1.0"
+  }
+}
