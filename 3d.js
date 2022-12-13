@@ -1,6 +1,7 @@
 
 var canvas = document.getElementById("viewport");
 var ctx = canvas.getContext("2d");
+
 var height = canvas.clientWidth;
 var width = canvas.clientHeight;
 
@@ -97,27 +98,26 @@ function vertexShader(x, y, z, matrix) {
     return [x0, y0, z0];
 }
 
-var _150 = 150;
-var _200 = 200;
-var _300 = 300;
 // you can make a Z-buffer, sampling from texture, phong shading...
 function fragmentShader(a, b, c) {
     var z = Math.min(a[2], b[2], c[2]);
     if (z < 0) return;
-    var x0 = _200 + _300 * a[0] / a[2];
-    var y0 = _150 + _300 * a[1] / a[2];
-    var x1 = _200 + _300 * b[0] / b[2];
-    var y1 = _150 + _300 * b[1] / b[2];
-    var x2 = _200 + _300 * c[0] / c[2];
-    var y2 = _150 + _300 * c[1] / c[2];
+    var dist = 300;
+    var x0 = dist * a[0] / a[2];
+    var y0 = dist * a[1] / a[2];
+    var x1 = dist * b[0] / b[2];
+    var y1 = dist * b[1] / b[2];
+    var x2 = dist * c[0] / c[2];
+    var y2 = dist * c[1] / c[2];
     return [z, x0, x1, x2, y0, y1, y2, 'rgba(150, 150, 150, 1)'];
 }
 
+var lineWidth = 5;
 function paintFill(positions) {
     for (var i = 0; i < positions.length; i++) {
         if (positions[i]) {
             ctx.beginPath();
-            ctx.lineWidth = 5 / positions[i][0];
+            ctx.lineWidth = lineWidth / positions[i][0];
             ctx.moveTo(positions[i][1], positions[i][4]);
             ctx.lineTo(positions[i][2], positions[i][5]);
             ctx.lineTo(positions[i][3], positions[i][6]);
@@ -129,13 +129,12 @@ function paintFill(positions) {
     }
 }
 
-var _3 = 3;
 function draw(points, triangles, matrix) {
     var positions = [];
     for (var i = 0; i < triangles.length; i += 3) {
-        var p0 = triangles[i] * _3;
-        var p1 = triangles[i + 1] * _3;
-        var p2 = triangles[i + 2] * _3;
+        var p0 = triangles[i] * 3;
+        var p1 = triangles[i + 1] * 3;
+        var p2 = triangles[i + 2] * 3;
         var a = vertexShader(points[p0], points[p0 + 1], points[p0 + 2], matrix);
         var b = vertexShader(points[p1], points[p1 + 1], points[p1 + 2], matrix);
         var c = vertexShader(points[p2], points[p2 + 1], points[p2 + 2], matrix);
