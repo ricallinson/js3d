@@ -1,37 +1,4 @@
 
-
-// Geometry of a Model
-var cubes = [];
-class Cube {
-    constructor(a) {
-        this.offset = a;
-        var v = [-1, -1, -1, 1, -1, -1, 1, -1, 1,    
-            -1, -1, 1, -1, 1, -1, 1, 1, -1,
-            1, 1, 1, -1, 1, 1];
-        var t = [0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4,
-            0, 1, 4, 1, 4, 5, 1, 2, 5, 2, 5, 6,
-            2, 3, 6, 3, 6, 7, 3, 0, 7, 0, 7, 4
-        ];
-        this.dx = -25 + 5 * (this.offset / 10);
-        this.dy = -3 + Math.random() * 6;
-        this.dz = -25 + 5 * (this.offset % 10);
-        // Plot
-        var j;
-        this.points = [];
-        for (j = 0; j < v.length; j += 3) {
-            this.points.push(this.dx + v[j], this.dy + v[j + 1], this.dz + v[j + 2]);
-        }
-        this.triangles = [];
-        for (j = 0; j < t.length; j++) {
-            this.triangles.push(this.offset * 8 + t[j]);
-        }
-    }
-}
-
-for (var i = 0; i < 100; i++) {
-    cubes.push(new Cube(i));
-}
-
 var canvas = document.getElementById("viewport");
 var ctx = canvas.getContext("2d");
 var height = canvas.clientWidth;
@@ -90,17 +57,17 @@ function updateKeys(code,val) {
     }
 }
 
-function getPositions(cubes) {
+function getPositions(models) {
     var points = [];
     var triangles = [];
-    for (var i = 0; i < cubes.length; i++) {
-        points.push(...cubes[i].points);
-        triangles.push(...cubes[i].triangles);
+    for (var i = 0; i < models.length; i++) {
+        points.push(...models[i].points);
+        triangles.push(...models[i].triangles);
     }
     return [points, triangles];
 }
 
-function update() {
+function update(models) {
     if(moveLeft) posX += 2;
     if(moveRight) posX -= 2;
     if(moveUp) posZ -= 2;
@@ -109,7 +76,6 @@ function update() {
     if(moveBackwards) posY -= 2;
     if(rotateLeft) posR += 2;
     if(rotateRight) posR -= 2;
-    positions = [];
     var ang = posR * 0.0123;
     var s = Math.sin(ang);
     var c = Math.cos(ang);
@@ -117,27 +83,11 @@ function update() {
     var matrix = [c, 0, -s, (posX * 0.123), 0, 1, 0, (posY * 0.123), s, 0, c, (posZ * 0.123)];
     // console.log('X', posX, 'Y', posY, 'Z', posZ, 'R', posR);
     ctx.clearRect(0, 0, height, width);
-    var [points, triangles] = getPositions(cubes);
-    var positions = draw(points, triangles, matrix);
-    positions.sort(sortZ);
-    paintFill(positions);
-    window.requestAnimationFrame(update);
-}
-
-function paintFill(positions) {
-    for (var i = 0; i < positions.length; i++) {
-        if (positions[i]) {
-            ctx.beginPath();
-            ctx.lineWidth = 5 / positions[i][0];
-            ctx.moveTo(positions[i][1], positions[i][4]);
-            ctx.lineTo(positions[i][2], positions[i][5]);
-            ctx.lineTo(positions[i][3], positions[i][6]);
-            ctx.lineTo(positions[i][1], positions[i][4]);
-            ctx.fillStyle = positions[i][7];
-            ctx.stroke();
-            ctx.fill();
-        }
-    }
+    var [points, triangles] = getPositions(models);
+    draw(points, triangles, matrix);
+    window.requestAnimationFrame(function() {
+        update(models);
+    });
 }
 
 function vertexShader(x, y, z, matrix) {
@@ -163,6 +113,22 @@ function fragmentShader(a, b, c) {
     return [z, x0, x1, x2, y0, y1, y2, 'rgba(150, 150, 150, 1)'];
 }
 
+function paintFill(positions) {
+    for (var i = 0; i < positions.length; i++) {
+        if (positions[i]) {
+            ctx.beginPath();
+            ctx.lineWidth = 5 / positions[i][0];
+            ctx.moveTo(positions[i][1], positions[i][4]);
+            ctx.lineTo(positions[i][2], positions[i][5]);
+            ctx.lineTo(positions[i][3], positions[i][6]);
+            ctx.lineTo(positions[i][1], positions[i][4]);
+            ctx.fillStyle = positions[i][7];
+            ctx.stroke();
+            ctx.fill();
+        }
+    }
+}
+
 var _3 = 3;
 function draw(points, triangles, matrix) {
     var positions = [];
@@ -175,11 +141,8 @@ function draw(points, triangles, matrix) {
         var c = vertexShader(points[p2], points[p2 + 1], points[p2 + 2], matrix);
         positions.push(fragmentShader(a, b, c));
     }
-    return positions;
+    positions.sort(function sortZ(a, b) {
+        return b[0] - a[0];
+    });
+    paintFill(positions);
 }
-
-function sortZ(a, b) {
-    return b[0] - a[0];
-}
-
-update();
