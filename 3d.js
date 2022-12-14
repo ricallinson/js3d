@@ -4,6 +4,8 @@ var ctx = canvas.getContext("2d");
 
 var height = canvas.clientWidth;
 var width = canvas.clientHeight;
+var centerHeight = canvas.height / 2;
+var centerWidth = canvas.width / 2;
 
 var posX = 0;
 var posY = 0;
@@ -78,11 +80,11 @@ function updateCameraLocation(cos, sin) {
     if(rotateLeft) posR -= step * radian;
     if(rotateRight) posR += step * radian;
     if(moveForwards) {
-        posX += sin
+        posX += sin;
         posZ += cos;
     }
     if(moveBackwards) {
-        posX -= sin
+        posX -= sin;
         posZ -= cos;
     }
     if(moveLeft) {
@@ -90,7 +92,7 @@ function updateCameraLocation(cos, sin) {
         posZ += sin;
     }
     if(moveRight) {
-        posX += cos
+        posX += cos;
         posZ -= sin;
     }
 }
@@ -128,12 +130,12 @@ function fragmentShader(a, b, c) {
     var z = Math.min(a[2], b[2], c[2]);
     if (z < 0) return;
     var dist = 400;
-    var x0 = (dist * a[0] / a[2]);
-    var y0 = (dist * a[1] / a[2]);
-    var x1 = (dist * b[0] / b[2]);
-    var y1 = (dist * b[1] / b[2]);
-    var x2 = (dist * c[0] / c[2]);
-    var y2 = (dist * c[1] / c[2]);
+    var x0 = centerWidth + (dist * a[0] / a[2]);
+    var y0 = centerHeight + (dist * a[1] / a[2]);
+    var x1 = centerWidth + (dist * b[0] / b[2]);
+    var y1 = centerHeight + (dist * b[1] / b[2]);
+    var x2 = centerWidth + (dist * c[0] / c[2]);
+    var y2 = centerHeight + (dist * c[1] / c[2]);
     return [z, x0, x1, x2, y0, y1, y2, 'rgba(150, 150, 150, 1)'];
 }
 
