@@ -1,8 +1,15 @@
 body {
-	background-color: white;
+	background-color: black;
 }
 
 #viewport {
 	width: 800px;
 	height: 400px;
+	border: solid;
+	border-color: white;
+	margin: 2rem;
+}
+
+#screen {
+	text-align: center;
 }

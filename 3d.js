@@ -75,8 +75,8 @@ var pi = Math.PI;
 var radian = 2 * pi / 180;
 function updateCameraLocation(cos, sin) {
     var step = 0.5;
-    if(moveUp) posY += step;
-    if(moveDown) posY -= step;
+    if(moveUp) posY += step / 2;
+    if(moveDown) posY -= step / 2;
     if(rotateLeft) posR -= step * radian;
     if(rotateRight) posR += step * radian;
     if(moveForwards) {
@@ -136,10 +136,12 @@ function fragmentShader(a, b, c) {
     var y1 = centerHeight + (dist * b[1] / b[2]);
     var x2 = centerWidth + (dist * c[0] / c[2]);
     var y2 = centerHeight + (dist * c[1] / c[2]);
+    // Cull back-facing triangles.
+    // if (((x1 - x0) * (y2 - y0) - (y1 - y0) * (x2 - x0)) > 0) return;
     return [z, x0, x1, x2, y0, y1, y2, 'rgba(150, 150, 150, 1)'];
 }
 
-var lineWidth = 5;
+var lineWidth = 10;
 function paintFill(positions) {
     for (var i = 0; i < positions.length; i++) {
         if (positions[i]) {
