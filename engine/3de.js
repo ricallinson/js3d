@@ -61,58 +61,100 @@ function updateKeys(code,val) {
     // console.log(code);
 }
 
+function makeCoordinateId(x, y, z) {
+    return Array.from(arguments).join(',');
+}
+
+function generateModelCollision(collisions, size, location) {
+    // With a location of x, y, z, and a size of sx, sy, sz.
+    // Generate all coordinates in the space.
+    // -sx to +sx, -sy to +sy, -sz to +sz.
+    // x = 0
+    // sx = 1
+    // gs = -1, 0, 1
+    for (var s = 0; s < 3; s++) {
+        for (var space = -size[s]; space <= size[s]; space++) {
+            for (var l = 0; l < 3; l++) {
+                // console.log('index', l, 'space', space, 'loc', location[l], 'val', space + location[l]);
+            }
+        }
+    }
+    return collisions;
+}
+
 function getModelPositions(model) {
     var points = [];
     var triangles = [];
+    var collisions = {};
     for (var i = 0; i < model.length; i++) {
-        points.push(...model[i].points);
-        triangles.push(...model[i].triangles);
+        var current = model[i];
+        points.push(...current.points);
+        triangles.push(...current.triangles);
+        collisions = generateModelCollision(collisions, current.size, current.location);
     }
-    return [points, triangles];
+    // console.log("collisions", collisions);
+    return [points, triangles, collisions];
 }
 
+var step = 0.5;
 var pi = Math.PI;
 var radian = 2 * pi / 180;
-function updateCameraLocation(cos, sin) {
-    var step = 0.5;
-    if(moveUp) posY += step / 2;
-    if(moveDown) posY -= step / 2;
-    if(rotateLeft) posR -= step * radian;
-    if(rotateRight) posR += step * radian;
-    if(moveForwards) {
-        posX += sin;
-        posZ += cos;
+function updateCameraLocation(cos, sin, collisions) {
+    var oldX = posX;
+    var oldY = posY;
+    var oldZ = posZ;
+    var newX = posX;
+    var newY = posY;
+    var newZ = posZ;
+    if (moveUp) {
+        newY += step / 2;
     }
-    if(moveBackwards) {
-        posX -= sin;
-        posZ -= cos;
+    if (moveDown) {
+        newY -= step / 2;
     }
-    if(moveLeft) {
-        posX -= cos;
-        posZ += sin;
+    if (rotateLeft) {
+        posR -= step * radian;
     }
-    if(moveRight) {
-        posX += cos;
-        posZ -= sin;
+    if (rotateRight) {
+        posR += step * radian;
     }
+    if (moveForwards) {
+        newX += sin;
+        newZ += cos;
+    }
+    if (moveBackwards) {
+        newX -= sin;
+        newZ -= cos;
+    }
+    if (moveLeft) {
+        newX -= cos;
+        newZ += sin;
+    }
+    if (moveRight) {
+        newX += cos;
+        newZ -= sin;
+    }
+    posX = newX
+    posY = newY
+    posZ = newZ
 }
 
 function update(model) {
+    var [points, triangles, collisions] = getModelPositions(model);
     var cos = Math.cos(posR);
     var sin = Math.sin(posR);
-    updateCameraLocation(cos, sin);
+    updateCameraLocation(cos, sin, collisions);
     var matrix = [
         cos, null, -sin, posX,
         null, null, null, posY,
         sin, null, cos, posZ
     ];
     ctx.clearRect(0, 0, height, width);
-    var [points, triangles] = getModelPositions(model);
     draw(points, triangles, matrix);
     window.requestAnimationFrame(function() {
         update(model);
     });
-    console.log('X', posX, 'Y', posY, 'Z', posZ);
+    // console.log('X', posX, 'Y', posY, 'Z', posZ);
 }
 
 function transform(x, y, z, matrix) {
