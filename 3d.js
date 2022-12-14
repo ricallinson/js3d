@@ -5,9 +5,9 @@ var ctx = canvas.getContext("2d");
 var height = canvas.clientWidth;
 var width = canvas.clientHeight;
 
-var posX = 15;
-var posY = 5;
-var posZ = 40;
+var posX = 0;
+var posY = 0;
+var posZ = 0;
 var posR = 0;
 
 var moveLeft = false;
@@ -32,19 +32,19 @@ function updateKeys(code,val) {
     case 37:
         moveLeft = val;
         break; //moveLeft key
-    case 87:
+    case 38:
         moveUp = val;
         break; //Up key
     case 39:
         moveRight = val;
         break; //moveRight key
-    case 83:
+    case 40:
         moveDown = val;
         break; //Down key
-    case 38:
+    case 87:
         moveForwards = val;
         break; //w key
-    case 40:
+    case 83:
         moveBackwards = val;
         break; //s key
     case 65:
@@ -56,6 +56,7 @@ function updateKeys(code,val) {
     // default:
     //   console.log(code);
     }
+    // console.log(code);
 }
 
 function getModelPositions(model) {
@@ -68,28 +69,38 @@ function getModelPositions(model) {
     return [points, triangles];
 }
 
-function updateCameraLocation() {
-    if(moveLeft) posX += 2;
-    if(moveRight) posX -= 2;
-    if(moveUp) posZ -= 2;
-    if(moveDown) posZ += 2;
-    if(moveForwards) posY += 2;
-    if(moveBackwards) posY -= 2;
-    if(rotateLeft) posR -= 2;
-    if(rotateRight) posR += 2;
+var pi = Math.PI
+function updateCameraLocation(cos, sin) {
+    var step = 0.5;
+    if(moveUp) posY += step;
+    if(moveDown) posY -= step;
+    if(rotateLeft) posR -= step * (2*pi);
+    if(rotateRight) posR += step * (2*pi);
+    if(moveForwards) {
+        posZ += step;
+    }
+    if(moveBackwards) {
+        posZ -= step;
+    }
+    if(moveLeft) {
+        posX += step;
+    }
+    if(moveRight) {
+        posX -= step;
+    }
 }
 
 function update(model) {
-    updateCameraLocation();
-    var angle = posR * 0.0123;
-    var cos = Math.cos(angle);// + posX;
-    var sin = Math.sin(angle);// + posY;
+    var angle = posR / 180;
+    var cos = Math.cos(angle);
+    var sin = Math.sin(angle);
+    updateCameraLocation(cos, sin);
     var matrix = [
         cos,  null, -sin, posX,
         null, null, null, posY,
         sin,  null, cos,  posZ
     ];
-    console.log(matrix);
+    console.log(posR, angle);
     ctx.clearRect(0, 0, height, width);
     var [points, triangles] = getModelPositions(model);
     draw(points, triangles, matrix);
