@@ -5,7 +5,7 @@
   "main": "3d.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fmt": "eslint --fix './*.js' './**/*.js' './*.json' './**/*.json'"
+    "fmt": "eslint --fix './**/*.js' './*.json' './**/*.json'"
   },
   "repository": {
     "type": "git",

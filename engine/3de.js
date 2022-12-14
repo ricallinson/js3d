@@ -9,7 +9,7 @@ var centerWidth = canvas.width / 2;
 
 var posX = 0;
 var posY = 0;
-var posZ = 0;
+var posZ = -25;
 var posR = 0;
 
 var moveLeft = false;
@@ -112,6 +112,7 @@ function update(model) {
     window.requestAnimationFrame(function() {
         update(model);
     });
+    console.log('X', posX, 'Y', posY, 'Z', posZ);
 }
 
 function transform(x, y, z, matrix) {
@@ -152,6 +153,7 @@ function paintFill(positions) {
             ctx.lineTo(positions[i][3], positions[i][6]);
             ctx.lineTo(positions[i][1], positions[i][4]);
             ctx.fillStyle = positions[i][7];
+            ctx.strokeStyle = '#fff';
             ctx.stroke();
             ctx.fill();
         }
