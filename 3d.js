@@ -69,38 +69,41 @@ function getModelPositions(model) {
     return [points, triangles];
 }
 
-var pi = Math.PI
+var pi = Math.PI;
+var radian = 2 * pi / 180;
 function updateCameraLocation(cos, sin) {
     var step = 0.5;
     if(moveUp) posY += step;
     if(moveDown) posY -= step;
-    if(rotateLeft) posR -= step * (2*pi);
-    if(rotateRight) posR += step * (2*pi);
+    if(rotateLeft) posR -= step * radian;
+    if(rotateRight) posR += step * radian;
     if(moveForwards) {
-        posZ += step;
+        posX += sin
+        posZ += cos;
     }
     if(moveBackwards) {
-        posZ -= step;
+        posX -= sin
+        posZ -= cos;
     }
     if(moveLeft) {
-        posX += step;
+        posX -= cos;
+        posZ += sin;
     }
     if(moveRight) {
-        posX -= step;
+        posX += cos
+        posZ -= sin;
     }
 }
 
 function update(model) {
-    var angle = posR / 180;
-    var cos = Math.cos(angle);
-    var sin = Math.sin(angle);
+    var cos = Math.cos(posR);
+    var sin = Math.sin(posR);
     updateCameraLocation(cos, sin);
     var matrix = [
-        cos,  null, -sin, posX,
+        cos, null, -sin, posX,
         null, null, null, posY,
-        sin,  null, cos,  posZ
+        sin, null, cos, posZ
     ];
-    console.log(posR, angle);
     ctx.clearRect(0, 0, height, width);
     var [points, triangles] = getModelPositions(model);
     draw(points, triangles, matrix);
@@ -125,12 +128,12 @@ function fragmentShader(a, b, c) {
     var z = Math.min(a[2], b[2], c[2]);
     if (z < 0) return;
     var dist = 400;
-    var x0 = (dist * a[0] / a[2]);// + centerX;
-    var y0 = (dist * a[1] / a[2]);// + centerY;
-    var x1 = (dist * b[0] / b[2]);// + centerX;
-    var y1 = (dist * b[1] / b[2]);// + centerY;
-    var x2 = (dist * c[0] / c[2]);// + centerX;
-    var y2 = (dist * c[1] / c[2]);// + centerY;
+    var x0 = (dist * a[0] / a[2]);
+    var y0 = (dist * a[1] / a[2]);
+    var x1 = (dist * b[0] / b[2]);
+    var y1 = (dist * b[1] / b[2]);
+    var x2 = (dist * c[0] / c[2]);
+    var y2 = (dist * c[1] / c[2]);
     return [z, x0, x1, x2, y0, y1, y2, 'rgba(150, 150, 150, 1)'];
 }
 
