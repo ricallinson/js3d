@@ -1,6 +1,5 @@
 class Cube {
     constructor(index, x, y, z) {
-        this.size = [1, 1, 1];
         this.location = [x, y, z];
         this.points = [];
         this.triangles = [];
@@ -23,8 +22,8 @@ class Cube {
 
 var cubes = [
     new Cube(0, 0, 0, 0),
-    // new Cube(1, 2, 2, 2),
-    // new Cube(2, -2, -2, -2)
+    new Cube(1, 2, 2, 2),
+    new Cube(2, -2, -2, -2)
 ];
 
 update(cubes);
