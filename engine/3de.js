@@ -1,3 +1,8 @@
+var step = 0.5;
+var pi = Math.PI;
+var radian = 2 * pi / 180;
+var collisionPadding = 2;
+var lineWidth = 10;
 
 var canvas = document.getElementById("viewport");
 var ctx = canvas.getContext("2d");
@@ -72,7 +77,6 @@ function getModelPositions(model) {
     return [points, triangles];
 }
 
-var collisionPadding = 0.2;
 function noCollisionX(model, cord) {
     for (var i = 0; i < model.length; i++) {
         if (cord >= model[i].location[0] - collisionPadding && cord <= model[i].location[0] + collisionPadding) {
@@ -100,9 +104,6 @@ function noCollisionZ(model, cord) {
     return true;
 }
 
-var step = 0.5;
-var pi = Math.PI;
-var radian = 2 * pi / 180;
 function updateCameraLocation(cos, sin, model) {
     var newX = posX;
     var newY = posY;
@@ -135,14 +136,14 @@ function updateCameraLocation(cos, sin, model) {
         newX += cos;
         newZ -= sin;
     }
-    var freeX = noCollisionX(model, newX);
-    var freeY = noCollisionY(model, newY);
-    var freeZ = noCollisionZ(model, newZ);
-    if (freeX || freeY || freeZ) {
-        posX = newX;
-        posY = newY;
-        posZ = newZ;
-    }
+    // var freeX = noCollisionX(model, newX);
+    // var freeY = noCollisionY(model, newY);
+    // var freeZ = noCollisionZ(model, newZ);
+    // if (freeX || freeY || freeZ) {
+    posX = newX;
+    posY = newY;
+    posZ = newZ;
+    // }
 }
 
 function update(model) {
@@ -160,7 +161,6 @@ function update(model) {
     window.requestAnimationFrame(function() {
         update(model);
     });
-    // console.log('X', posX, 'Y', posY, 'Z', posZ);
 }
 
 function transform(x, y, z, matrix) {
@@ -174,7 +174,6 @@ function transform(x, y, z, matrix) {
     return [X, Y, Z];
 }
 
-// you can make a Z-buffer, sampling from texture, phong shading...
 function fragmentShader(a, b, c) {
     var z = Math.min(a[2], b[2], c[2]);
     if (z < 0) return;
@@ -190,7 +189,6 @@ function fragmentShader(a, b, c) {
     return [z, x0, x1, x2, y0, y1, y2, 'rgba(150, 150, 150, 1)'];
 }
 
-var lineWidth = 10;
 function paintFill(positions) {
     for (var i = 0; i < positions.length; i++) {
         if (positions[i]) {
@@ -201,7 +199,6 @@ function paintFill(positions) {
             ctx.lineTo(positions[i][3], positions[i][6]);
             ctx.lineTo(positions[i][1], positions[i][4]);
             ctx.fillStyle = positions[i][7];
-            ctx.strokeStyle = '#fff';
             ctx.stroke();
             ctx.fill();
         }
@@ -219,7 +216,7 @@ function draw(points, triangles, matrix) {
         var c = transform(points[p2], points[p2 + 1], points[p2 + 2], matrix);
         positions.push(fragmentShader(a, b, c));
     }
-    positions.sort(function sortZ(a, b) {
+    positions.sort(function(a, b) {
         return b[0] - a[0];
     });
     paintFill(positions);

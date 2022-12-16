@@ -21,7 +21,9 @@ class Cube {
 }
 
 var cubes = [];
-for (var i = 0; i < 100; i++) {
-    cubes.push(new Cube(i, -50 + 5 * (i / 10), -3 + Math.random() * 6, -50 + 5 * (i % 10)));
+var space = 200;
+var offset = -(space / 2);
+for (var i = 0; i < 1000; i++) {
+    cubes.push(new Cube(i, offset + Math.random() * space, offset + Math.random() * space, offset + Math.random() * space));
 }
 update(cubes);
