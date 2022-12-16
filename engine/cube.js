@@ -20,10 +20,8 @@ class Cube {
     }
 }
 
-var cubes = [
-    new Cube(0, 0, 0, 0),
-    new Cube(1, 2, 2, 2),
-    new Cube(2, -2, -2, -2)
-];
-
+var cubes = [];
+for (var i = 0; i < 100; i++) {
+    cubes.push(new Cube(i, -50 + 5 * (i / 10), -3 + Math.random() * 6, -50 + 5 * (i % 10)));
+}
 update(cubes);

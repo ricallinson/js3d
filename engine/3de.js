@@ -72,7 +72,7 @@ function getModelPositions(model) {
     return [points, triangles];
 }
 
-var collisionPadding = 1;
+var collisionPadding = 0.2;
 function noCollisionX(model, cord) {
     for (var i = 0; i < model.length; i++) {
         if (cord >= model[i].location[0] - collisionPadding && cord <= model[i].location[0] + collisionPadding) {
