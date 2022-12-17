@@ -190,7 +190,7 @@ function fragmentShader(a, b, c) {
     var x2 = centerWidth + (dist * c[0] / c[2]);
     var y2 = centerHeight + (dist * c[1] / c[2]);
     // Cull back-facing triangles.
-    if (((x1 - x0) * (y2 - y0) - (y1 - y0) * (x2 - x0)) > 0) return;
+    // if (((x1 - x0) * (y2 - y0) - (y1 - y0) * (x2 - x0)) > 0) return;
     return [z, x0, x1, x2, y0, y1, y2, 'rgba(150, 150, 150, 1)'];
 }
 
@@ -204,6 +204,7 @@ function paintFill(positions) {
             ctx.lineTo(positions[i][3], positions[i][6]);
             ctx.lineTo(positions[i][1], positions[i][4]);
             ctx.fillStyle = positions[i][7];
+            // ctx.strokeStyle = '#999'
             ctx.stroke();
             ctx.fill();
         }
