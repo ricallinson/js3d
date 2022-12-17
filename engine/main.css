@@ -3,8 +3,8 @@ body {
 }
 
 #viewport {
-	width: 40rem;
-	height: 20rem;
+	width: 800px;
+	height: 400px;
 	border: solid;
 	border-color: white;
 	margin: 2rem;

@@ -3,14 +3,19 @@ var pi = Math.PI;
 var radian = 2 * pi / 180;
 var collisionPadding = 2;
 var lineWidth = 10;
+var scale = 1;
 
 var canvas = document.getElementById("viewport");
 var ctx = canvas.getContext("2d");
 
-var height = canvas.clientWidth;
-var width = canvas.clientHeight;
-var centerHeight = canvas.height / 2;
-var centerWidth = canvas.width / 2;
+
+var width = canvas.clientWidth * scale;
+var height = canvas.clientHeight * scale;
+var centerWidth = width / 2;
+var centerHeight = height / 2;
+
+canvas.width = width;
+canvas.height = height;
 
 var posX = 0;
 var posY = 0;
@@ -156,7 +161,7 @@ function update(model) {
         null, null, null, posY,
         sin, null, cos, posZ
     ];
-    ctx.clearRect(0, 0, height, width);
+    ctx.clearRect(0, 0, width, height);
     draw(points, triangles, matrix);
     window.requestAnimationFrame(function() {
         update(model);
@@ -177,7 +182,7 @@ function transform(x, y, z, matrix) {
 function fragmentShader(a, b, c) {
     var z = Math.min(a[2], b[2], c[2]);
     if (z < 0) return;
-    var dist = 400;
+    var dist = 800;
     var x0 = centerWidth + (dist * a[0] / a[2]);
     var y0 = centerHeight + (dist * a[1] / a[2]);
     var x1 = centerWidth + (dist * b[0] / b[2]);
@@ -185,7 +190,7 @@ function fragmentShader(a, b, c) {
     var x2 = centerWidth + (dist * c[0] / c[2]);
     var y2 = centerHeight + (dist * c[1] / c[2]);
     // Cull back-facing triangles.
-    // if (((x1 - x0) * (y2 - y0) - (y1 - y0) * (x2 - x0)) > 0) return;
+    if (((x1 - x0) * (y2 - y0) - (y1 - y0) * (x2 - x0)) > 0) return;
     return [z, x0, x1, x2, y0, y1, y2, 'rgba(150, 150, 150, 1)'];
 }
 
